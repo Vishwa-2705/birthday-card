@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Happy Birthday Amma</title>
+
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+<style>
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: linear-gradient(135deg, #ffd6e0, #ffe9c9);
+    overflow: hidden;
+}
+
+/* Tap screen */
+#startScreen {
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.tapCard {
+    background: white;
+    padding: 30px 50px;
+    border-radius: 20px;
+    font-size: 24px;
+    cursor: pointer;
+    animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.08); }
+    100% { transform: scale(1); }
+}
+
+/* Layout */
+#card {
+    display: none;
+    height: 100vh;
+}
+
+/* Left message */
+.message {
+    width: 50%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 60px;
+}
+
+.message h1 {
+   
+    color: #ff3366;
+    font-size: 40px;
+    text-align: center;
+    width: 100%;
+}
+
+
+
+.message p {
+    background: white;
+    padding: 25px;
+    border-radius: 20px;
+    line-height: 1.8;
+    font-size: 18px;
+}
+
+/* Right slideshow */
+.gallery {
+    width: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+}
+
+.gallery img {
+    width: 280px;
+    height: 320px;
+    object-fit: contain;
+    background: white;
+    border-radius: 20px;
+    position: absolute;
+    opacity: 0;
+    transform: scale(0.9);
+    transition: all 1s ease;
+}
+
+.gallery img.active {
+    opacity: 1;
+    transform: scale(1);
+}
+
+/* Hearts */
+.heart {
+    position: fixed;
+    bottom: -10px;
+    animation: floatUp 6s linear forwards;
+}
+
+@keyframes floatUp {
+    to {
+        transform: translateY(-110vh);
+        opacity: 0;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<!-- Tap screen -->
+<div id="startScreen">
+    <div class="tapCard" onclick="openCard()">
+        Tap to open card 💝
+    </div>
+</div>
+
+<!-- Main card -->
+<div id="card">
+
+<div class="message">
+<h1>Happy Birthday Amma ❤️</h1>
+<p>
+நான் எவ்வளவு தொலைவில் இருந்தாலும்,
+நீங்கள் எப்போதும் என் இதயத்தில் தான் இருக்கிறீர்கள்.<br><br>
+
+உங்கள் முடிவில்லா அன்புக்கும்,
+கவனிப்புக்கும், தியாகங்களுக்கும்
+என் மனமார்ந்த நன்றி அம்மா.<br><br>
+
+நீங்கள் தான் என் தைரியம்,
+என் ஆறுதல்,
+என் வாழ்வின் ஊக்கமூட்டல்.<br><br>
+
+நீண்ட ஆயுள், நல்ல ஆரோக்கியம்
+மற்றும் அமைதி நிறைந்த வாழ்க்கை
+உங்களுக்கு கிடைக்க வேண்டுகிறேன்.<br><br>
+
+என்றும் உங்களை நேசிக்கும்
+உங்கள் மகள் ❤️
+</p>
+</div>
+
+<div class="gallery" id="gallery"></div>
+
+</div>
+
+<!-- MUSIC -->
+<audio id="music" loop>
+    <source src="music/song.mp3" type="audio/mpeg">
+</audio>
+
+<script>
+let total = 29;
+let current = 0;
+let images = [];
+let slideshowInterval;
+
+function openCard() {
+    document.getElementById("startScreen").style.display = "none";
+    document.getElementById("card").style.display = "flex";
+
+    document.getElementById("music").play();
+
+    confetti({ particleCount: 200, spread: 70 });
+
+    createGallery();
+    startSlideshow();
+    floatingHearts();
+}
+
+function createGallery() {
+    const gallery = document.getElementById("gallery");
+
+    for (let i = 1; i <= total; i++) {
+        let img = document.createElement("img");
+        img.src = "images/photo" + i + ".jpeg";
+        if (i === 1) img.classList.add("active");
+        gallery.appendChild(img);
+        images.push(img);
+    }
+}
+
+function startSlideshow() {
+    slideshowInterval = setInterval(() => {
+        images[current].classList.remove("active");
+        current++;
+
+        if (current === total) {
+            clearInterval(slideshowInterval);
+            setTimeout(showEndMessage, 1500);
+            return;
+        }
+
+        images[current].classList.add("active");
+    }, 2200);
+}
+
+function showEndMessage() {
+    document.getElementById("card").innerHTML = `
+        <div style="
+            width:100%;
+            height:100vh;
+            display:flex;
+            justify-content:center;
+            align-items:center;
+            flex-direction:column;
+            text-align:center;
+        ">
+            <h1 style="color:#ff3366;">Happy Birthday Amma ❤️</h1>
+            <p style="
+                background:white;
+                padding:30px;
+                border-radius:20px;
+                line-height:1.8;
+                max-width:500px;
+            ">
+                எப்போதும் சிரித்துக்கொண்டே
+                மகிழ்ச்சியாக இருக்கணும் அம்மா ❤️
+            </p>
+        </div>
+    `;
+
+    confetti({ particleCount: 300, spread: 120 });
+}
+
+function floatingHearts() {
+    setInterval(() => {
+        let heart = document.createElement("div");
+        heart.className = "heart";
+        heart.innerHTML = "❤️";
+        heart.style.left = Math.random() * 100 + "vw";
+        heart.style.fontSize = Math.random() * 20 + 20 + "px";
+        document.body.appendChild(heart);
+
+        setTimeout(() => heart.remove(), 6000);
+    }, 500);
+}
+</script>
+
+</body>
+</html>
